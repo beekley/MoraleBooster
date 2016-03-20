@@ -1,0 +1,10 @@
+.row {
+	clear: both;
+}
+.cell {
+	float: left;
+	border: 5px solid black;
+	width: 100px;
+	height: 100px;
+	margin: auto;
+}
