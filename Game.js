@@ -3,6 +3,8 @@ var turn = 1;
 var board = new Array(3);
 for (var i = 0; i < 3; i++) { board[i] = new Array(3)};
 
+ai = false;
+
 // player's turn
 function pcTurn(cell, player) {
 	
@@ -14,15 +16,21 @@ function pcTurn(cell, player) {
 		board[col][row] = player;
 		console.log(turn);
 					
-		var nextplayer = 1 + player%2;
+		// moved to checkWin() 
+		/*var nextplayer = 1 + player%2;
 		state = "p" + nextplayer + " turn";
-		turn++;
+		turn++;*/
 		
-		checkWin(col, row);
+		checkWin(col, row, player);
 	};
 };
 
-function checkWin(col, row) {
+// Always-lose AI turn
+function losingAIturn() {
+	
+};
+
+function checkWin(col, row, player) {
 	// check in row
 	if (board[0][row] == board[col][row] &&
 		board[1][row] == board[col][row] &&
@@ -53,8 +61,20 @@ function checkWin(col, row) {
 	
 	// check draw
 	else if (turn >= 9) {
-		gameEnd(0);
-	}
+		endGame(0);
+	} 
+	
+	// Continue Playing
+	else {
+		var nextplayer = 1 + player%2;
+		state = "p" + nextplayer + " turn";
+		turn++;
+		
+		//start AI turn
+		if (ai == true && nextplayer == 2) {
+			losingAIturn();
+		};
+	};
 };
 
 function endGame(winningPlayer) {
@@ -80,7 +100,9 @@ $( document ).ready(function() {
 				pcTurn($(this).attr('id'),1);
 				break;
 			case "p2 turn":
-				pcTurn($(this).attr('id'),2);
+				if (ai == false) {
+					pcTurn($(this).attr('id'),2);
+				};
 				break;
 		};
 	});
