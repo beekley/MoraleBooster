@@ -62,35 +62,66 @@ function losingAIturn() {
 		};
 	}
 	// Turn 6
-	// 1. find empty cell
-	// 2. test if any two P1 moves will result in loss
-	// 3. if false, repeat
+	/* 
+	One algorithm:
+	1. Find next empty cell, place P2
+	2. Does P2 win?
+	If yes, goto 1. and clear previous move
+	If no, goto 3.
+	3. Find next empty cell, place P2
+	4. Does P2 win?
+	If yes, goto 3. and clear previous move
+	If no, goto 5.
+	5. Find next empty cell, place P1
+	6. Find next empty cell, place P1
+	7. Does P1 win with both previous moves?
+	If yes, place P2 in cell from 1.
+	If no, goto 3.
+	If out of spaces, goto 1.
+	*/
 	else if (turn == 6){
 		
+		// Try all open cells until finding the first good one
 		for (var i = findOpenCell(0); i < 9; i++)  {
-			
-			// 1. Find empty cell
+			console.log("i: "+i);
+			// 1. Find next empty cell, place P2
 			var openCell = findOpenCell(i);
 			var col = openCell%3;
 			var row = Math.floor(openCell/3);
 			console.log(col + " " + row);
 			
-			// 2. Test if any two P1 moves in remaining cells result in loss
-			// Test for loss if going here
+			// 2. Does P2 win with a move here?
+			
 			var testBoard = board;
 			testBoard[col][row] = 2;
+			
 			if (checkWin(testBoard, col, row) != 2) {
-				// Check first option
-				var tb1 = testBoard;
 				
-				// Does AI move produce win?
-				var testCol1 = findOpenCol(tb1);
-				var testRow1 = findOpenRow(tb1);
-				tb1[testCol1][testRow1] = 2;
-				// Looking for a 0 here, aka did the AI win with this move?
-				var result1 = checkWin(tb1, testCol1, testRow1);
-				
-				
+				for (var j = 0; j < 3; j++) {
+					// 3. Find next empty cell, place P2
+					var tb1 = testBoard;
+					
+					var testCol1 = findOpenCol(tb1);
+					var testRow1 = findOpenRow(tb1);
+					tb1[testCol1][testRow1] = 2;
+					
+					// 4. Does P2 win?
+					// Looking for a 0 here, aka did the AI win with this move?
+					var result1 = checkWin(tb1, testCol1, testRow1);
+					
+					if (!result1) {
+						// 5. Find next empty cell, place P1
+						var testCol2 = findOpenCol(tb1);
+						var testRow2 = findOpenRow(tb1);
+						tb1[testCol2][testRow2] = 1;
+						
+						// 6. Find next empty cell, place P1
+						var testCol3 = findOpenCol(tb1);
+						var testRow3 = findOpenRow(tb1);
+						tb1[testCol3][testRow3] = 1;
+						
+					}
+				}
 				
 			}
 			
@@ -158,7 +189,9 @@ function pcTurn(cell, player) {
 };
 
 // Checks for winning board based on given move
+// Returns winner, else 0
 function checkWin(brd, col, row) {
+	
 	// check in row
 	if (brd[0][row] == brd[col][row] &&
 		brd[1][row] == brd[col][row] &&
