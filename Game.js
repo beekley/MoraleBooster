@@ -100,9 +100,10 @@ function losingAIturn() {
 				for (var j = 0; j < 3; j++) {
 					// 3. Find next empty cell, place P2
 					var tb1 = testBoard;
-					
+													
 					var testCol1 = findOpenCol(tb1);
 					var testRow1 = findOpenRow(tb1);
+					
 					tb1[testCol1][testRow1] = 2;
 					
 					// 4. Does P2 win?
@@ -174,6 +175,7 @@ function pcTurn(cell, player) {
 		var col = cell%3;
 		var row = Math.floor(cell/3);
 		board[col][row] = player;
+		console.log("Move: " + col + "," + row);
 					
 		// moved to resolveTurn() 
 		/*var nextplayer = 1 + player%2;
