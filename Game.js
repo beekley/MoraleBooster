@@ -92,14 +92,26 @@ function losingAIturn() {
 			
 			// 2. Does P2 win with a move here?
 			
-			var testBoard = board;
+			// Copy board
+			// Simply using board.slice() didn't seem to work
+			// Probably because of the arrays within the array were still pointers to the same data
+			var testBoard = new Array(3);
+			for (var k = 0; k < 3; k++) {
+				testBoard[k] = board[k].slice();
+			}
+			
 			testBoard[col][row] = 2;
 			
 			if (checkWin(testBoard, col, row) != 2) {
 				
 				for (var j = 0; j < 3; j++) {
 					// 3. Find next empty cell, place P2
-					var tb1 = testBoard;
+					
+					// Copy baord
+					var tb1 = new Array(3);
+					for (var k = 0; k < 3; k++) {
+						tb1[k] = testBoard[k].slice();
+					}
 													
 					var testCol1 = findOpenCol(tb1);
 					var testRow1 = findOpenRow(tb1);
@@ -170,13 +182,22 @@ function findOpenCell(startingCell) {
 function pcTurn(cell, player) {
 	
 	if($("#" + cell).text() == "") {
-		$("#" + cell).text(player);
-		
 		var col = cell%3;
 		var row = Math.floor(cell/3);
 		board[col][row] = player;
 		console.log("Move: " + col + "," + row);
-					
+		
+		// Update displayed board to match board array
+		for (var i = 0; i < 3; i++) {
+			for (var j = 0; j < 3; j++) {
+				// Get cell number from array
+				var cellNum = i + 3*j;
+				
+				// Print to cell
+				$("#" + cellNum).text(board[i][j]);
+			}
+		}
+								
 		// moved to resolveTurn() 
 		/*var nextplayer = 1 + player%2;
 		state = "p" + nextplayer + " turn";
