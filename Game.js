@@ -99,9 +99,9 @@ function losingAIturn() {
 				testBoard[k] = board[k].slice();
 			}
 			
-			testBoard[col][row] = 2;
+			//testBoard[col][row] = 2;
 			
-			if (checkWin(testBoard, col, row) != 2) {
+			if (true) {
 				
 				for (var j = 0; j < 3; j++) {
 					// 3. Find next empty cell, place P2
@@ -137,13 +137,11 @@ function losingAIturn() {
 						
 						// Put P2 move in second (next) empty spot and check for win
 						tb1[testCol2][testRow2] = 2;
-						console.log(tb1);
 
 						if (checkWin(tb1, testCol2, testRow2) != 2) {
 							
 							// Put p1 move in next empty spot
 							tb1[testCol3][testRow3] = 1;
-							console.log(tb1[testCol3])
 
 							if (checkWin(tb1, testCol2, testRow2) == 1) {
 								console.log(testCol2 +','+ testRow2);
@@ -163,7 +161,7 @@ function losingAIturn() {
 								tb1[testCol4][testRow4] = null;
 							}
 						}
-						/*
+						
 						// Put P2 move in third empty spot and check for win
 						tb1[testCol3][testRow3] = 2;
 
@@ -215,7 +213,7 @@ function losingAIturn() {
 								tb1[testCol4][testRow4] = null;
 							}
 						}
-						*/
+						
 						console.log(winCount);
 					}
 				}
