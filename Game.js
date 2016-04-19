@@ -88,7 +88,6 @@ function losingAIturn() {
 			var openCell = findOpenCell(i);
 			var col = openCell%3;
 			var row = Math.floor(openCell/3);
-			console.log(col + " " + row);
 			
 			// 2. Does P2 win with a move here?
 			
@@ -112,32 +111,115 @@ function losingAIturn() {
 					for (var k = 0; k < 3; k++) {
 						tb1[k] = testBoard[k].slice();
 					}
-													
+					
+					// initialize test vars		
 					var testCol1 = findOpenCol(tb1);
 					var testRow1 = findOpenRow(tb1);
+					var testCol2 = findOpenCol(tb1);
+					var testRow2 = findOpenRow(tb1);
+					var testCol3 = findOpenCol(tb1);
+					var testRow3 = findOpenRow(tb1);
+					var testCol4 = findOpenCol(tb1);
+					var testRow4 = findOpenRow(tb1);
 					
 					tb1[testCol1][testRow1] = 2;
 					
 					// 4. Does P2 win?
-					// Looking for a 0 here, aka did the AI win with this move?
+					// Looking for a 0 here and won't continue if 1
 					var result1 = checkWin(tb1, testCol1, testRow1);
+					console.log(result1);
 					
+					// Run through all combinations of two P1 moves and count P1 wins
+					var winCount = 0;
 					if (!result1) {
+
 						// 5. Find next empty cell, place P1
-						var testCol2 = findOpenCol(tb1);
-						var testRow2 = findOpenRow(tb1);
-						tb1[testCol2][testRow2] = 1;
 						
-						// 6. Find next empty cell, place P1
-						var testCol3 = findOpenCol(tb1);
-						var testRow3 = findOpenRow(tb1);
-						tb1[testCol3][testRow3] = 1;
-						
+						// Put P2 move in second (next) empty spot and check for win
+						tb1[testCol2][testRow2] = 2;
+						console.log(tb1);
+
+						if (checkWin(tb1, testCol2, testRow2) != 2) {
+							
+							// Put p1 move in next empty spot
+							tb1[testCol3][testRow3] = 1;
+							console.log(tb1[testCol3])
+
+							if (checkWin(tb1, testCol2, testRow2) == 1) {
+								console.log(testCol2 +','+ testRow2);
+								winCount += 1;
+							} else {
+								// 6. Find next empty cell, place P1
+								tb1[testCol4][testRow4] = 1;
+
+								if (checkWin(tb1, testCol3, testRow3) ==  1) {
+									winCount += 1;
+								}
+
+								
+								// reset last three moves
+								tb1[testCol2][testRow2] = null;
+								tb1[testCol3][testRow3] = null;
+								tb1[testCol4][testRow4] = null;
+							}
+						}
+						/*
+						// Put P2 move in third empty spot and check for win
+						tb1[testCol3][testRow3] = 2;
+
+						if (checkWin(tb1, testCol2, testRow2) != 2) {
+							
+							// Put p1 move in next empty spot
+							tb1[testCol2][testRow2] = 1;
+
+							if (checkWin(tb1, testCol2, testRow2) == 1) {
+								winCount += 1;
+							} else {
+								// 6. Find next empty cell, place P1
+								tb1[testCol4][testRow4] = 1;
+
+								if (checkWin(tb1, testCol3, testRow3) ==  1) {
+									winCount += 1;
+								}
+
+								//console.log(tb1);
+								// reset last three moves
+								tb1[testCol2][testRow2] = null;
+								tb1[testCol3][testRow3] = null;
+								tb1[testCol4][testRow4] = null;
+							}
+						}
+
+						// Put P2 move in third empty spot and check for win
+						tb1[testCol4][testRow4] = 2;
+
+						if (checkWin(tb1, testCol2, testRow2) != 2) {
+							
+							// Put p1 move in next empty spot
+							tb1[testCol2][testRow2] = 1;
+
+							if (checkWin(tb1, testCol2, testRow2) == 1) {
+								winCount += 1;
+							} else {
+								// 6. Find next empty cell, place P1
+								tb1[testCol3][testRow3] = 1;
+
+								if (checkWin(tb1, testCol3, testRow3) ==  1) {
+									winCount += 1;
+								}
+
+								//console.log(tb1);
+								// reset last three moves
+								tb1[testCol2][testRow2] = null;
+								tb1[testCol3][testRow3] = null;
+								tb1[testCol4][testRow4] = null;
+							}
+						}
+						*/
+						console.log(winCount);
 					}
 				}
-				
 			}
-			
 			
 			break;
 		};
