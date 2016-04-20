@@ -64,163 +64,57 @@ function losingAIturn() {
 	// Turn 6
 	/* 
 	One algorithm:
-	1. Find next empty cell, place P2
-	2. Does P2 win?
-	If yes, goto 1. and clear previous move
-	If no, goto 3.
-	3. Find next empty cell, place P2
-	4. Does P2 win?
-	If yes, goto 3. and clear previous move
-	If no, goto 5.
-	5. Find next empty cell, place P1
-	6. Find next empty cell, place P1
-	7. Does P1 win with both previous moves?
-	If yes, place P2 in cell from 1.
-	If no, goto 3.
-	If out of spaces, goto 1.
+	1. P2 in next empty cell
+	2. P2, P1 and P1 in remaining empty cells
+	3. Repeat 2 for each combination of moves in thos three cells
+	3a. If there are two P1 winning states and no P2 winning states in the three,
+	then P2 chooses cell from 1
+	3b. Else return to 1 with next next empty cell
 	*/
 	else if (turn == 6){
-		
-		// Try all open cells until finding the first good one
-		for (var i = findOpenCell(0); i < 9; i++)  {
-			console.log("i: "+i);
-			// 1. Find next empty cell, place P2
-			var openCell = findOpenCell(i);
-			var col = openCell%3;
-			var row = Math.floor(openCell/3);
-			
-			// 2. Does P2 win with a move here?
-			
-			// Copy board
-			// Simply using board.slice() didn't seem to work
-			// Probably because of the arrays within the array were still pointers to the same data
-			var testBoard = new Array(3);
+
+		// initialize test vars	
+		var testCol = new Array(4);
+		var testRow = new Array(4);
+
+		for (i=0; i<4; i++) {
+
+			// Copy baord
+			var tb1 = new Array(3);
 			for (var k = 0; k < 3; k++) {
-				testBoard[k] = board[k].slice();
+				tb1[k] = board[k].slice();
 			}
+
+			testCol[i%4] = findOpenCol(tb1);
+			testRow[i%4] = findOpenRow(tb1);
 			
-			//testBoard[col][row] = 2;
+			tb1[testCol[i%4]][testRow[i%4]] = 2;
 			
-			if (true) {
-				
-				for (var j = 0; j < 3; j++) {
-					// 3. Find next empty cell, place P2
-					
-					// Copy baord
-					var tb1 = new Array(3);
-					for (var k = 0; k < 3; k++) {
-						tb1[k] = testBoard[k].slice();
-					}
-					
-					// initialize test vars		
-					var testCol1 = findOpenCol(tb1);
-					var testRow1 = findOpenRow(tb1);
-					var testCol2 = findOpenCol(tb1);
-					var testRow2 = findOpenRow(tb1);
-					var testCol3 = findOpenCol(tb1);
-					var testRow3 = findOpenRow(tb1);
-					var testCol4 = findOpenCol(tb1);
-					var testRow4 = findOpenRow(tb1);
-					
-					tb1[testCol1][testRow1] = 2;
-					
-					// 4. Does P2 win?
-					// Looking for a 0 here and won't continue if 1
-					var result1 = checkWin(tb1, testCol1, testRow1);
-					console.log(result1);
-					
-					// Run through all combinations of two P1 moves and count P1 wins
-					var winCount = 0;
-					if (!result1) {
 
-						// 5. Find next empty cell, place P1
-						
-						// Put P2 move in second (next) empty spot and check for win
-						tb1[testCol2][testRow2] = 2;
+			for (j=0; j<4; j++) {
 
-						if (checkWin(tb1, testCol2, testRow2) != 2) {
-							
-							// Put p1 move in next empty spot
-							tb1[testCol3][testRow3] = 1;
-
-							if (checkWin(tb1, testCol2, testRow2) == 1) {
-								console.log(testCol2 +','+ testRow2);
-								winCount += 1;
-							} else {
-								// 6. Find next empty cell, place P1
-								tb1[testCol4][testRow4] = 1;
-
-								if (checkWin(tb1, testCol3, testRow3) ==  1) {
-									winCount += 1;
-								}
-
-								
-								// reset last three moves
-								tb1[testCol2][testRow2] = null;
-								tb1[testCol3][testRow3] = null;
-								tb1[testCol4][testRow4] = null;
-							}
-						}
-						
-						// Put P2 move in third empty spot and check for win
-						tb1[testCol3][testRow3] = 2;
-
-						if (checkWin(tb1, testCol2, testRow2) != 2) {
-							
-							// Put p1 move in next empty spot
-							tb1[testCol2][testRow2] = 1;
-
-							if (checkWin(tb1, testCol2, testRow2) == 1) {
-								winCount += 1;
-							} else {
-								// 6. Find next empty cell, place P1
-								tb1[testCol4][testRow4] = 1;
-
-								if (checkWin(tb1, testCol3, testRow3) ==  1) {
-									winCount += 1;
-								}
-
-								//console.log(tb1);
-								// reset last three moves
-								tb1[testCol2][testRow2] = null;
-								tb1[testCol3][testRow3] = null;
-								tb1[testCol4][testRow4] = null;
-							}
-						}
-
-						// Put P2 move in third empty spot and check for win
-						tb1[testCol4][testRow4] = 2;
-
-						if (checkWin(tb1, testCol2, testRow2) != 2) {
-							
-							// Put p1 move in next empty spot
-							tb1[testCol2][testRow2] = 1;
-
-							if (checkWin(tb1, testCol2, testRow2) == 1) {
-								winCount += 1;
-							} else {
-								// 6. Find next empty cell, place P1
-								tb1[testCol3][testRow3] = 1;
-
-								if (checkWin(tb1, testCol3, testRow3) ==  1) {
-									winCount += 1;
-								}
-
-								//console.log(tb1);
-								// reset last three moves
-								tb1[testCol2][testRow2] = null;
-								tb1[testCol3][testRow3] = null;
-								tb1[testCol4][testRow4] = null;
-							}
-						}
-						
-						console.log(winCount);
-					}
+				// Copy baord
+				var tb2 = new Array(3);
+				for (var k = 0; k < 3; k++) {
+					tb2[k] = tb1[k].slice();
 				}
+
+				testCol[(j+i)%4] = findOpenCol(tb1);
+				testRow[(j+i)%4] = findOpenRow(tb1);
+				
+				tb2[testCol[(j+i)%4]][testRow[(j+i)%4]] = 2;
+				console.log(tb2);
+				
+
+
+				// only do first one for now
+				break;
 			}
-			
+
+
+			// only do first one for now
 			break;
-		};
+		}
 		
 	};
 
