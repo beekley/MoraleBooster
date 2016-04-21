@@ -184,23 +184,25 @@ function losingAIturn() {
 		}
 		
 		// Try the first open spot
-		var openCol = findOpenCol(tb1);
-		var openRow = findOpenRow(tb1);
+		var openCol = new Array(2);
+		var openRow = new Array(2);
 		
-		console.log(openCol + ' ' + openRow);
+		openCol[0] = findOpenCol(tb1);
+		openRow[0] = findOpenRow(tb1);
+		tb1[openCol[0]][openRow[0]] = 2;
 		
-		tb1[openCol][openRow] = 2;
+		openCol[1] = findOpenCol(tb1);
+		openRow[1] = findOpenRow(tb1);
+		tb1[openCol[1]][openRow[1]] = 1;
 		
-		if (checkWin(tb1, openCol, openRow) != 2) {
-			// Go there
-			pcTurn(openCol + 3*openRow, 2);
+		if (checkWin(tb1, openCol[0], openRow[0]) != 2
+		&& checkWin(tb1, openCol[0], openRow[0]) == 1) {
+			// Go to first spot
+			pcTurn(openCol[0] + 3*openRow[0], 2);
 		} else {
-			// find the next open spot
-			openCol = findOpenCol(tb1);
-			openRow = findOpenRow(tb1);
 			
-			// Go there
-			pcTurn(openCol + 3*openRow, 2);
+			// Go to second spot
+			pcTurn(openCol[1] + 3*openRow[1], 2);
 		}
 	}
 }
