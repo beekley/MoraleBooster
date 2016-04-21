@@ -92,8 +92,6 @@ function losingAIturn() {
 			tb1[openCol[i]][openRow[i]] = 3; // doesn't matter what this is
 			
 		}
-		console.log(openCol);
-		console.log(openRow);
 		
 		// run algorithm
 		for (j=0; j<4; j++) {
@@ -158,23 +156,50 @@ function losingAIturn() {
 					}
 				}
 			}
-			
-			console.log("P2 Wins: " + P2wins);
-			console.log("P2 Losses: " + P2losses);
-			
-			// Check t6 move loss?
-
+						
+			// Check t6 move loss and two wins here?
 			if (checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 & P2losses >= 2){
 				console.log(openCol[j%4] + ' ' + openRow[j%4]);
 				
+				// Move there
 				// Ugh still using 0-8 system
 				pcTurn(openCol[j%4] + 3*openRow[j%4], 2);
 				break;	
 			}
 		}
-	};
-
-};
+	} 
+	
+	// Turn 8
+	// Easy peasy. Look for the spot that doesn't result in a loss
+	else if (turn == 8){
+		
+		// Create test board
+		var tb1 = new Array(3);
+		for (var k=0; k<3; k++) {
+			tb1[k] = board[k].slice();
+		}
+		
+		// Try the first open spot
+		var openCol = findOpenCol(tb1);
+		var openRow = findOpenRow(tb1);
+		
+		console.log(openCol + ' ' + openRow);
+		
+		tb1[openCol][openRow] = 2;
+		
+		if (checkWin(tb1, openCol, openRow) != 2) {
+			// Go there
+			pcTurn(openCol + 3*openRow, 2);
+		} else {
+			// find the next open spot
+			openCol = findOpenCol(tb1);
+			openRow = findOpenRow(tb1);
+			
+			// Go there
+			pcTurn(openCol + 3*openRow, 2);
+		}
+	}
+}
 
 // Find open cell of arbirary board using coordinates
 function findOpenRow(brd) {
@@ -203,9 +228,9 @@ function findOpenCell(startingCell) {
 		if($("#" + i).text() == "") {
 			return i;
 		}
-	};
+	}
 	return -1;
-};
+}
 
 // player's turn
 // Actually, now the mechanism for every turn
