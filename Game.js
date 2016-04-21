@@ -3,6 +3,10 @@ var turn = 1;
 var board = new Array(3);
 for (var i = 0; i < 3; i++) { board[i] = new Array(3)};
 
+var playerChars = [];
+playerChars[1] = 'X';
+playerChars[2] = 'O';
+
 ai = true;
 
 
@@ -158,7 +162,7 @@ function losingAIturn() {
 			}
 						
 			// Check t6 move loss and two wins here?
-			if (checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 & P2losses >= 2){
+			if (checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 && P2losses >= 2){
 				console.log(openCol[j%4] + ' ' + openRow[j%4]);
 				
 				// Move there
@@ -249,7 +253,7 @@ function pcTurn(cell, player) {
 				var cellNum = i + 3*j;
 				
 				// Print to cell
-				$("#" + cellNum).text(board[i][j]);
+				$("#" + cellNum).text(playerChars[board[i][j]]);
 			}
 		}
 								
@@ -337,6 +341,17 @@ function endGame(winningPlayer) {
 		console.log("Draw!");
 	};	
 };
+
+function resetBoard(brd) {
+	brd = brd || board;
+	
+	for (var col = 0; col < 3; col++){
+		for (var row = 0; row < 3; row++){
+			brd[col][row] = null;
+		}
+	}
+	
+}
 
 
 // Code to run
