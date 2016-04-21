@@ -72,50 +72,84 @@ function losingAIturn() {
 	3b. Else return to 1 with next next empty cell
 	*/
 	else if (turn == 6){
-
+	
 		// initialize test vars	
-		var testCol = new Array(4);
-		var testRow = new Array(4);
+		var openCol = new Array(4);
+		var openRow = new Array(4);
 
-		for (i=0; i<4; i++) {
-
-			// Copy baord
-			var tb1 = new Array(3);
-			for (var k = 0; k < 3; k++) {
-				tb1[k] = board[k].slice();
-			}
-
-			testCol[i%4] = findOpenCol(tb1);
-			testRow[i%4] = findOpenRow(tb1);
-			
-			tb1[testCol[i%4]][testRow[i%4]] = 2;
-			
-
-			for (j=0; j<4; j++) {
-
-				// Copy baord
-				var tb2 = new Array(3);
-				for (var k = 0; k < 3; k++) {
-					tb2[k] = tb1[k].slice();
-				}
-
-				testCol[(j+i)%4] = findOpenCol(tb1);
-				testRow[(j+i)%4] = findOpenRow(tb1);
-				
-				tb2[testCol[(j+i)%4]][testRow[(j+i)%4]] = 2;
-				console.log(tb2);
-				
-
-
-				// only do first one for now
-				break;
-			}
-
-
-			// only do first one for now
-			break;
+		// Find open cells
+		// First, make a copy of the board
+		var tb1 = new Array(3);
+		for (var k=0; k<3; k++) {
+			tb1[k] = board[k].slice();
 		}
 		
+		// Then record and fill the cells
+		for (i=0; i<4; i++) {
+
+			openCol[i] = findOpenCol(tb1);
+			openRow[i] = findOpenRow(tb1);
+			tb1[openCol[i]][openRow[i]] = 3; // doesn't matter what this is
+			
+		}
+		console.log(openCol);
+		console.log(openRow);
+		
+		// run algorithm
+		for (j=0; j<4; j++) {
+			
+			// Initialize Win/loss counts for P2
+			var P2wins = 0;
+			var P2losses = 0;
+
+			// Create new test board
+			var tb2 = new Array(3);
+			for (var k=0; k<3; k++) {
+				tb2[k] = board[k].slice();
+			}
+
+			// Set P2 move location
+			tb2[openCol[j%4]][openRow[j%4]] = 2;
+			
+			
+			// Find open cells from the new board
+			var testCol = new Array(3);
+			var testRow = new Array(3);
+			
+			// Create new test board from tb2
+			var tb3 = new Array(3);
+			for (var k=0; k<3; k++) {
+				tb3[k] = tb2[k].slice();
+			}
+			
+			// Then record and fill the cells
+			for (i=0; i<3; i++) {
+
+				testCol[i] = findOpenCol(tb3);
+				testRow[i] = findOpenRow(tb3);
+				tb3[testCol[i]][testRow[i]] = 3; // doesn't matter what this is
+			}
+
+			for (i=0; i<3; i++) {
+
+				// Create new test board from tb2
+				// This board will be a completed board that contains a possible finish
+				var tb4 = new Array(3);
+				for (var k=0; k<3; k++) {
+					tb4[k] = tb2[k].slice();
+				}
+
+				// Set P2 move location
+				tb4[testCol[i%3]][testRow[i%3]] = 2;
+				// Set P1 move locations
+				tb4[testCol[(i+1)%3]][testRow[(i+1)%3]] = 1;
+				tb4[testCol[(i+2)%3]][testRow[(i+2)%3]] = 1;
+				
+				// Test moves for wins/losses
+				
+			}
+			
+		}
 	};
 
 };
