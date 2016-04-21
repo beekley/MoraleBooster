@@ -146,9 +146,31 @@ function losingAIturn() {
 				tb4[testCol[(i+2)%3]][testRow[(i+2)%3]] = 1;
 				
 				// Test moves for wins/losses
-				
+				for (var k=0; k<3; k++) {
+					var win = checkWin(tb4, testCol[k], testRow[k]);
+					
+					if (win == 2) {
+						P2wins += 1;
+						break;
+					} else if (win == 1) {
+						P2losses += 1;
+						break;
+					}
+				}
 			}
 			
+			console.log("P2 Wins: " + P2wins);
+			console.log("P2 Losses: " + P2losses);
+			
+			// Check t6 move loss?
+
+			if (checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 & P2losses >= 2){
+				console.log(openCol[j%4] + ' ' + openRow[j%4]);
+				
+				// Ugh still using 0-8 system
+				pcTurn(openCol[j%4] + 3*openRow[j%4], 2);
+				break;	
+			}
 		}
 	};
 
