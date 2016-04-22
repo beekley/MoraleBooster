@@ -44,13 +44,21 @@ function losingAIturn() {
 	// find open side next to corner
 	else if (turn == 4) {
 		// Go to side  next to P1 corner
-		if (board[logCol[1]][0] == 1 || board[logCol[1]][2] == 1) {
+		if (board[logCol[1]][2] == 1) {
 			if (!board[logCol[1]][1]) {
 				pcTurn(logCol[1] + 3*1, 2);
 			} 
-			// uhhhhh this kinda feels super sketch
+			// uhhhhh this kinda feels super sketch and a patchwork solution for one case
 			else { 
-				pcTurn(2 + 3*(logRow[1]%2 + 1), 2);
+				pcTurn(5, 2);
+			}
+		} else if (board[0][logRow[1]] == 1 || board[2][logRow[1]] == 1) {
+			if (!board[1][logRow[1]]) {
+				pcTurn(logCol[1] + 3*1, 2);
+			} 
+			// uhhhhh this kinda feels super sketch and a patchwork solution for one case
+			else { 
+				pcTurn(7, 2);
 			}
 		}
 		
@@ -175,9 +183,7 @@ function losingAIturn() {
 					}
 				}
 			}
-			
-			console.log(P2losses + ' ' + P2wins);
-			
+						
 			// Check t6 move loss and two wins here?
 			if (
 			checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 
