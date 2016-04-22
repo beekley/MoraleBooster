@@ -9,6 +9,10 @@ playerChars[2] = 'O';
 
 ai = true;
 
+// Log moves
+var logCol = new Array(9);
+var logRow = new Array(9);
+
 
 // Always-lose AI turn
 /*
@@ -16,9 +20,9 @@ P1 =  player 1 move
 P2 =  AI move
 
 Turn 2 (first AI turn): corner not bordering P1
-Turn 4: Open side bordering P2
-Turn 6: Cell that results in three winnable spots (and also doesn't get 3 in a row)
-Turn 8: Any open cell
+Turn 4: Open side bordering P2, preferring next to P1 corner
+Turn 6: Cell that results in two P1 win conditions (and also doesn't get 3 in a row)
+Turn 8: Whatever move doesn't win for P2 and forces win for P1
 Turn 10: ???
 
 
@@ -39,7 +43,19 @@ function losingAIturn() {
 	} 
 	// find open side next to corner
 	else if (turn == 4) {
-		if (board[0][0] == 2) {
+		// Go to side  next to P1 corner
+		if (board[logCol[1]][0] == 1 || board[logCol[1]][2] == 1) {
+			if (!board[logCol[1]][1]) {
+				pcTurn(logCol[1] + 3*1, 2);
+			} 
+			// uhhhhh this kinda feels super sketch
+			else { 
+				pcTurn(2 + 3*(logRow[1]%2 + 1), 2);
+			}
+		}
+		
+		// If no side next to P1 corner, then go to next open side
+		else if (board[0][0] == 2) {
 			if (!board[1][0]) {
 				pcTurn(1, 2);
 			} else {
@@ -156,13 +172,18 @@ function losingAIturn() {
 						break;
 					} else if (win == 1) {
 						P2losses += 1;
-						break;
 					}
 				}
 			}
-						
+			
+			console.log(P2losses + ' ' + P2wins);
+			
 			// Check t6 move loss and two wins here?
-			if (checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 && P2losses >= 2){
+			if (
+			checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 
+			&& P2losses >= 2
+			&& P2wins <= 1
+			){
 				console.log(openCol[j%4] + ' ' + openRow[j%4]);
 				
 				// Move there
@@ -170,6 +191,15 @@ function losingAIturn() {
 				pcTurn(openCol[j%4] + 3*openRow[j%4], 2);
 				break;	
 			}
+		}
+		
+		// If still turn 6, then AI didn't make a move
+		if (turn == 6) {
+			console.log("Ya got me!");
+			console.log("Here are the moves that lead to this:");
+			console.log(logCol);
+			console.log(logRow);
+			
 		}
 	} 
 	
@@ -196,7 +226,7 @@ function losingAIturn() {
 		tb1[openCol[1]][openRow[1]] = 1;
 		
 		if (checkWin(tb1, openCol[0], openRow[0]) != 2
-		&& checkWin(tb1, openCol[0], openRow[0]) == 1) {
+		&& checkWin(tb1, openCol[1], openRow[1]) == 1) {
 			// Go to first spot
 			pcTurn(openCol[0] + 3*openRow[0], 2);
 		} else {
@@ -259,10 +289,8 @@ function pcTurn(cell, player) {
 			}
 		}
 								
-		// moved to resolveTurn() 
-		/*var nextplayer = 1 + player%2;
-		state = "p" + nextplayer + " turn";
-		turn++;*/
+		logCol[turn-1] = col;
+		logRow[turn-1] = row;
 		
 		resolveTurn(col, row, player);
 	} else {
