@@ -43,13 +43,12 @@ function losingAIturn() {
 	} 
 	// find open side next to corner
 	else if (turn == 4) {
-		// Begin special-case workarounds :|
+		// Begin specific-case workarounds :|
 		// Go to side  next to P1 corner
 		if (board[logCol[1]][2] == 1) {
 			if (!board[logCol[1]][1]) {
 				pcTurn(logCol[1] + 3*1, 2);
 			} 
-			// uhhhhh this kinda feels super sketch and a patchwork solution for one case
 			else { 
 				pcTurn(5, 2);
 			}
@@ -57,12 +56,19 @@ function losingAIturn() {
 			if (!board[1][logRow[1]]) {
 				pcTurn(logCol[1] + 3*1, 2);
 			} 
-			// uhhhhh this kinda feels super sketch and a patchwork solution for one case
 			else { 
 				pcTurn(7, 2);
 			}
 		}
-		// End special-case workarounds :)
+		// barf
+		else if (!board[1][2] && !board[2][2]) {
+			pcTurn(7, 2);
+		} else if (!board[2][1] && !board[2][2] && !board[2][0]) {
+			pcTurn(5, 2);
+		} else if (!board[0][1]) {
+			pcTurn(3, 2);
+		}
+		// End specific-case workarounds :)
 		
 		// If no side next to P1 corner, then go to next open side
 		else if (board[0][0] == 2) {
