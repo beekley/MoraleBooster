@@ -8,6 +8,9 @@ playerChars[1] = 'X';
 playerChars[2] = 'O';
 
 ai = true;
+randoP1 = true;
+
+verbose = false;
 
 // Log moves
 var logCol = new Array(9);
@@ -198,7 +201,9 @@ function losingAIturn() {
 			&& P2losses >= 2
 			&& P2wins <= 1
 			){
-				console.log(openCol[j%4] + ' ' + openRow[j%4]);
+				if (verbose) {
+					console.log(openCol[j%4] + ' ' + openRow[j%4]);
+				}
 				
 				// Move there
 				// Ugh still using 0-8 system
@@ -209,11 +214,13 @@ function losingAIturn() {
 		
 		// If still turn 6, then AI didn't make a move
 		if (turn == 6) {
-			console.log("Ya got me!");
-			console.log("Here are the moves that lead to this:");
-			console.log(logCol);
-			console.log(logRow);
-			
+			if (verbose){
+				console.log("Ya got me!");
+				console.log("Here are the moves that lead to this:");
+				console.log(logCol);
+				console.log(logRow);
+			}
+			pcTurn(4,2);
 		}
 	} 
 	
@@ -249,6 +256,40 @@ function losingAIturn() {
 			pcTurn(openCol[1] + 3*openRow[1], 2);
 		}
 	}
+}
+
+// Run random tests until a non-win is found
+function randoP1Turn() {
+	// Create test board
+	var tb1 = new Array(3);
+	for (var k=0; k<3; k++) {
+		tb1[k] = board[k].slice();
+	}
+	
+	var openCol = new Array(9);
+	var openRow = new Array(9);
+	var openCount = 0;
+	
+	for (var i=0; i<9; i++) {
+		
+		openCol[i] =  findOpenCol(tb1);
+		openRow[i] =  findOpenRow(tb1);
+		
+		try {
+			tb1[openCol[i]][openRow[i]] = true;
+		}
+		catch (err) {
+			break;
+		}
+		
+		openCount++;
+
+	}
+	
+	// Randomly choose number
+	var rand = Math.floor(openCount*Math.random());
+	
+	pcTurn(openCol[rand] + 3*openRow[rand],1);
 }
 
 // Find open cell of arbirary board using coordinates
@@ -290,7 +331,10 @@ function pcTurn(cell, player) {
 		var col = cell%3;
 		var row = Math.floor(cell/3);
 		board[col][row] = player;
+		
+		if (verbose) {
 		console.log("Move: " + col + "," + row);
+		}
 		
 		// Update displayed board to match board array
 		for (var i = 0; i < 3; i++) {
@@ -368,10 +412,18 @@ function resolveTurn(col, row, player) {
 		state = "p" + nextplayer + " turn";
 		turn++;
 		
+		if (verbose) {
+			console.log("Turn: " + turn);
+		}
+		
 		//start AI turn
 		if (ai == true && nextplayer == 2) {
-			console.log("Turn: " + turn);
 			losingAIturn();
+		};
+		
+		//start AI turn
+		if (randoP1 == true && nextplayer == 1) {
+			randoP1Turn();
 		};
 	};
 };
@@ -381,11 +433,23 @@ function endGame(winningPlayer) {
 	
 	if (winningPlayer != 0) {
 		console.log("Player " + winningPlayer + " wins!");
+		
 	} else {
 		console.log("Draw!");
-	};	
+	}
+	
+	if (randoP1 && winningPlayer != 1) {
+		console.log("Here are the moves that lead to this:");
+		console.log(logCol);
+		console.log(logRow);
+	} else if (randoP1 && winningPlayer == 1) {
+		resetBoard();
+		randoP1Turn();
+	}
+	
 };
 
+// Wipe the board
 function resetBoard(brd) {
 	brd = brd || board;
 	
@@ -395,19 +459,35 @@ function resetBoard(brd) {
 		}
 	}
 	
+	for (var i=0; i<9; i++) {
+		$("#" + i).text('');
+	}
+	
+	turn = 1;
+	var state = "p1 turn"
 }
+
 
 
 // Code to run
 $( document ).ready(function() {
 	
+	if (randoP1) {
+		randoP1Turn();
+	}
+	
 	// click on cell event
 	$( ".cell" ).click(function(){
-		console.log("State: " + state);
+		if (verbose) {
+			console.log("State: " + state);
+		}
+		
 		// if Player 1's turn
 		switch(state) {
 			case "p1 turn":
-				pcTurn($(this).attr('id'),1);
+				if (randoP1 == false) {
+					pcTurn($(this).attr('id'),1);
+				}
 				break;
 			case "p2 turn":
 				if (ai == false) {
