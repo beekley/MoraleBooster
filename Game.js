@@ -10,7 +10,7 @@ playerChars[2] = 'O';
 ai = true;
 randoP1 = true;
 
-verbose = false;
+verbose = true;
 
 // Log moves
 var logCol = new Array(9);
@@ -32,8 +32,10 @@ Turn 10: ???
 */
 function losingAIturn() {
 	
-	// find open corner
+	// take corner next to P1 side
 	if (turn == 2) {
+
+	// find open corner
 		if (!board[0][0] && !board[1][0] && !board[0][1]) {
 			pcTurn(0, 2);
 		} else if (!board[2][0] && !board[1][0] && !board[2][1]) {
@@ -45,10 +47,10 @@ function losingAIturn() {
 		};
 	} 
 	// find open side next to corner
-	else if (turn == 4) {
+	if (turn == 4) {
 		// Begin specific-case workarounds :|
 		// Go to side  next to P1 corner
-		if (board[logCol[1]][2] == 1) {
+		/*if (board[logCol[1]][2] == 1) {
 			if (!board[logCol[1]][1]) {
 				pcTurn(logCol[1] + 3*1, 2);
 			} 
@@ -74,7 +76,7 @@ function losingAIturn() {
 		// End specific-case workarounds :)
 		
 		// If no side next to P1 corner, then go to next open side
-		else if (board[0][0] == 2) {
+		else*/ if (board[0][0] == 2) {
 			if (!board[1][0]) {
 				pcTurn(1, 2);
 			} else {
@@ -191,10 +193,11 @@ function losingAIturn() {
 						break;
 					} else if (win == 1) {
 						P2losses += 1;
+						break;
 					}
 				}
 			}
-						
+					
 			// Check t6 move loss and two wins here?
 			if (
 			checkWin(tb2, openCol[j%4], openRow[j%4]) != 2 
@@ -220,13 +223,12 @@ function losingAIturn() {
 				console.log(logCol);
 				console.log(logRow);
 			}
-			pcTurn(4,2);
 		}
 	} 
 	
 	// Turn 8
 	// Easy peasy. Look for the spot that doesn't result in a loss
-	else if (turn == 8){
+	else if (turn == 8 && state != 'end'){
 		
 		// Create test board
 		var tb1 = new Array(3);
