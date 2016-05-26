@@ -9,12 +9,20 @@ playerChars[2] = 'O';
 
 ai = true;
 randoP1 = true;
-
 verbose = true;
 
 // Log moves
 var logCol = new Array(9);
 var logRow = new Array(9);
+
+// Initialize AI memory (BRAAAINS)
+var mem = [];
+
+// Prototype memory object
+// col and row are arrays of moves 
+// there is likely a smarter way of storing this
+// like some interesting tree data structure
+// oh well
 
 
 // Always-lose AI turn
@@ -225,7 +233,7 @@ function endGame(winningPlayer) {
 	
 };
 
-// Wipe the board
+// Wipe the board and reset to turn 1
 function resetBoard(brd) {
 	brd = brd || board;
 	
