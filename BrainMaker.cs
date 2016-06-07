@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Web.Script.Serialization;
 
-namespace HelloWorld
+namespace brain
 {
 	public class Node {
 				
@@ -13,36 +12,45 @@ namespace HelloWorld
 		public bool result;
 		
 		// Children nodes
-		public List<Node> child = new List<Node>();
+		public List<Node> children = new List<Node>();
 		
 		// Generate child nodes
 		public void generateChildren() {
 			for ( int i = 0; i < 8 - this.depth; i++ ) {
-				this.child.Add(new Node{ depth = this.depth + 1 });
-				this.child[i].generateChildren();
+				this.children.Add(new Node{ depth = this.depth + 1 });
+				this.children[i].generateChildren();
 			}
 		}
 		
+		public string serializeJSON() {
+			string json = @"{""depth"":"+this.depth+","
+				+@"""result"":"+this.result+","
+				+@"""children"":[";
+			
+			foreach(var child in this.children) {
+				json += child.serializeJSON() + ",";
+			};
+			
+			json += @"]}";
+			
+			return json;
+		}
+					
 	};
 
-    class Hello 
+    class brainMaker 
     {
         static void Main() 
         {
 			// Root node
 			var tree = new Node { depth = 0 };
 			tree.generateChildren();
-			Console.WriteLine(tree.child[7].child[6].child[5].child[4].child[3].child[2].child[1].child[0]);
+			Console.WriteLine(tree.children[7].children[6].children[5].children[4].children[3].children[2].children[1].children[0]);
+			
+			System.IO.File.WriteAllText(@"C:\Users\brett.beekley\Documents\GitHub\MoraleBooster\json.txt", tree.serializeJSON());
+			
 			Console.Write("Done.");
 			Console.Read();
-			
-
-			var serializer = new JavaScriptSerializer();
-			string json = serializer.Serialize(tree);
-
-			//string json = JsonConvert.SerializeObject(Node);
-
-			System.IO.File.WriteAllText(@"C:\Users\brett.beekley\Documents\GitHub\MoraleBooster\json.txt", json);
-        }
+		}
     }
 }
