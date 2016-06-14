@@ -9,7 +9,9 @@ namespace brain
 		public int depth;
 		
 		// true if...
-		public bool result;
+		public bool result = false;
+		
+		public bool played = false;
 		
 		// Children nodes
 		public List<Node> children = new List<Node>();
@@ -20,6 +22,15 @@ namespace brain
 				this.children.Add(new Node{ depth = this.depth + 1 });
 				this.children[i].generateChildren();
 			}
+		}
+		
+		public Node findNextMove() {
+			foreach(var child in this.children) {
+				if (!child.played) {
+					return child;
+				}
+			}
+			return null;
 		}
 		
 		public string serializeJSON() {
@@ -36,6 +47,34 @@ namespace brain
 			return json;
 		}
 					
+	};
+	
+	public class Game {
+		
+		int[] board = new int[9];
+		
+		// initialize current node
+		// This is used to keep track of where we are in the tree
+		Node currentNode;
+		public Game(Node node) {
+			currentNode = node;
+		}
+		
+		// 1 Find next move
+		// 2 Move there, where currentNode.depth is odd: 1, else: 2
+		// 3 Check if move causes a win or draw
+		// if win for p1
+		// return true
+		// if draw/loss for p1
+		// return false
+		// else
+		// goto 1
+		public bool play() {
+			return true;
+		}
+		
+		
+		
 	};
 
     class brainMaker 
