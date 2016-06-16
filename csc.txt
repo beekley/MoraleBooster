@@ -1,0 +1,1 @@
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\CSC.EXE /out:brain.exe C:\Users\brett.beekley\Documents\GitHub\MoraleBooster\BrainMaker.cs
