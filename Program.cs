@@ -40,6 +40,24 @@ namespace brain
             }
         }
 
+        public int countLeaves(int i)
+        {
+            // if leaf, increment by 1
+            if(this.children.Count == 0)
+            {
+                i++;
+            } 
+            // if not leaf, then continue counting for children.
+            else
+            {
+                foreach (var child in this.children)
+                {
+                    i = child.countLeaves(i);
+                }
+            }
+            return i;
+        }
+
         public int findNextMove()
         {
             // index
@@ -164,7 +182,9 @@ namespace brain
                 // Check for end
                 int status = this.checkWin(move);
 
-                if(status != 0)
+                this.currentNode = this.currentNode.children[childNumber];
+
+                if (status != 0)
                 {
                     // delete children that will never be played
                     this.currentNode.children.Clear();
@@ -172,7 +192,7 @@ namespace brain
                     return status;
                 }
 
-                this.currentNode = this.currentNode.children[childNumber];
+                
             }
             return -1;
         }
@@ -215,16 +235,17 @@ namespace brain
                 return board[3 * (i / 3)];
             }
             // Check diagonals
-            else if ((board[0] == board[4] &&
-                board[0] == board[8]) ||
-                (board[2] == board[4] &&
-                board[2] == board[6]) &&
-                board[i] == board[4])
+            else if ((
+                (board[4] == board[0] &&
+                board[4] == board[8]) ||
+                (board[4] == board[2] &&
+                board[4] == board[6])
+                ) && board[i] == board[4])
             {
                 return board[4];
             }
             // Check if last move
-            else if (this.currentNode.depth >= 7)
+            else if (this.currentNode.depth >= 8)
             {
                 return 3;
             }
@@ -244,9 +265,11 @@ namespace brain
             // Root node
             var tree = new Node { depth = 0 };
             tree.generateChildren();
-            Console.WriteLine(tree.children[8].children[7].children[6].children[5].children[4].children[3].children[2].children[1].children[0]);
+            //Console.WriteLine(tree.children[8].children[7].children[6].children[5].children[4].children[3].children[2].children[1].children[0]);
+            //Console.WriteLine(tree.countLeaves(0));
 
             int i = 0;
+            int[] endTurn = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
             while (true)
             {
@@ -258,11 +281,12 @@ namespace brain
                     break;
                 }
                 i++;
+                endTurn[game.currentNode.depth -1]++;
             }
             
             System.IO.File.WriteAllText(@"C:\Users\brett.beekley\Documents\GitHub\MoraleBooster\json.txt", tree.serializeJSON());
 
-            Console.Write("Done.");
+            Console.Write("Simulated games: " + i);
             Console.Read();
         }
     }
